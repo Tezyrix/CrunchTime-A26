@@ -5,185 +5,242 @@
     <title>Dashboard | EduDemo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles de base pour assurer le fonctionnement de l'accordéon si non présents dans style.css */
+        .year-content { display: none; margin-bottom: 10px; }
+        .year-content.open { display: block; }
+        .year-title { cursor: pointer; user-select: none; margin: 15px 0 5px 0; color: var(--primary); }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    </style>
 </head>
 <body class="dashboard-body">
 
-    <aside class="sidebar">
-        <div class="sidebar-top">
-            <div class="brand">Edu<span>Demo</span></div>
+<aside class="sidebar">
+    <div class="sidebar-top">
+        <div class="brand">Edu<span>Demo</span></div>
+    </div>
+    <nav class="sidebar-nav">
+        <button class="nav-item active" onclick="openTab(event, 'Home')">🏠 Accueil</button>
+        <button class="nav-item" onclick="openTab(event, 'Chat')">💬 Chat</button>
+        <button class="nav-item" onclick="openTab(event, 'Projets')" id="nav-project-text">📁 Projets</button>
+    </nav>
+    <div class="sidebar-bottom">
+        <div class="user-info">
+            <div class="avatar" id="avatar-letter">?</div>
+            <div class="user-details">
+                <p class="user-name" id="user-display">Utilisateur</p>
+                <p class="user-role" id="role-display">Rôle</p>
+            </div>
         </div>
-        <nav class="sidebar-nav">
-            <button class="nav-item active" onclick="openTab(event, 'Home')">🏠 Accueil</button>
-            <button class="nav-item" onclick="openTab(event, 'Chat')">💬 Chat</button>
-            <button class="nav-item" onclick="openTab(event, 'Projets')" id="nav-project-text">📁 Projets</button>
-        </nav>
-        <div class="sidebar-bottom">
-            <div class="user-info">
-                <div class="avatar" id="avatar-letter">?</div>
-                <div class="user-details">
-                    <p class="user-name" id="user-display">Utilisateur</p>
-                    <p class="user-role" id="role-display">Rôle</p>
-                </div>
+        <a href="index.html" class="logout-link">Déconnexion</a>
+    </div>
+</aside>
+
+<main class="content">
+    <header class="content-header">
+        <h1 id="tab-title">Accueil</h1>
+    </header>
+
+    <section id="Home" class="tab-pane active">
+        <div class="card">
+            <h2>Bienvenue sur EduDemo</h2>
+            <p style="color: var(--text-light); margin-top: 10px; line-height: 1.6;">
+                Cette plateforme centralise la gestion de vos projets de fin d'année.
+                Utilisez l'onglet <strong>Chat</strong> pour communiquer avec vos tuteurs et l'onglet
+                <strong>Projets</strong> pour suivre l'avancement technique.
+            </p>
+            <div class="info-box-simple" style="margin-top: 25px;">
+                <h4>Dernière mise à jour</h4>
+                <p>Le calendrier des soutenances a été publié dans l'onglet documents.</p>
             </div>
-            <a href="index.html" class="logout-link">Déconnexion</a>
         </div>
-    </aside>
+    </section>
 
-    <main class="content">
-        <header class="content-header">
-            <h1 id="tab-title">Accueil</h1>
-        </header>
-
-        <section id="Home" class="tab-pane active">
-            <div class="card">
-                <h2>Bienvenue sur EduDemo</h2>
-                <p style="color: var(--text-light); margin-top: 10px; line-height: 1.6;">
-                    Cette plateforme centralise la gestion de vos projets de fin d'année. 
-                    Utilisez l'onglet <strong>Chat</strong> pour communiquer avec vos tuteurs et l'onglet 
-                    <strong>Projets</strong> pour suivre l'avancement technique.
-                </p>
-                <div class="info-box-simple" style="margin-top: 25px;">
-                    <h4>Dernière mise à jour</h4>
-                    <p>Le calendrier des soutenances a été publié dans l'onglet documents.</p>
+    <section id="Chat" class="tab-pane">
+        <div class="chat-container">
+            <div class="chat-messages" id="chatbox">
+                <div class="message received">
+                    <span class="sender">Mme Martin</span>
+                    <p>Bonjour à tous, bienvenue dans l'espace de discussion.</p>
                 </div>
             </div>
-        </section>
-
-        <section id="Chat" class="tab-pane">
-            <div class="chat-container">
-                <div class="chat-messages" id="chatbox">
-                    <div class="message received">
-                        <span class="sender">Mme Martin</span>
-                        <p>Bonjour à tous, bienvenue dans l'espace de discussion.</p>
-                    </div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Écrivez votre message...">
-                    <button onclick="sendMessage()" class="btn-send">Envoyer</button>
-                </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Écrivez votre message...">
+                <button onclick="sendMessage()" class="btn-send">Envoyer</button>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="Projets" class="tab-pane">
-            <div id="singleton-content"></div>
-        </section>
-    </main>
+    <section id="Projets" class="tab-pane">
+        <div id="singleton-content"></div>
+    </section>
+</main>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const role = params.get('role') || 'Etudiant';
-        const container = document.getElementById('singleton-content');
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role') || 'Etudiant';
+    const container = document.getElementById('singleton-content');
 
-        if (role === 'Etudiant') document.getElementById('nav-project-text').innerText = "📁 Mon Projet";
+    if (role === 'Etudiant') {
+        document.getElementById('nav-project-text').innerText = "📁 Mon Projet";
+    }
 
-        const profiles = {
-            'Etudiant': {
-                name: "Guillaume", avatar: "G",
-                html: `<div class="card border-student">
-                    <span class="tag tag-green">Actif</span>
-                    <h2>Refonte Site E-commerce</h2>
-                    <div class="info-box-simple">
-                        <p><strong>Entreprise :</strong> TechCorp</p>
-                        <p><strong>Statut :</strong> En cours</p>
-                        <p><strong>Membres :</strong> Guillaume, Wylliam, Théo</p>
-                    </div>
-                </div>`
-            },
-            'Ecole': {
-                name: "Mme Martin", avatar: "M",
-                html: `<div class="card border-admin">
-                    <div class="flex-between">
-                        <h2>Administration Projets</h2>
-                        <button class="btn-small-primary" onclick="addNewProjectRow()">+ Ajouter</button>
-                    </div>
-                    <table class="data-table" id="projects-table">
-                        <thead><tr><th>Projet</th><th>Entreprise</th><th>Étudiant</th><th></th></tr></thead>
-                        <tbody>
-                            <tr><td contenteditable="true">Refonte E-commerce</td><td>TechCorp</td><td>Guillaume, Wylliam, Théo</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
-                        <tbody>
-                            <tr><td contenteditable="true">yotuube</td><td>TechCorp</td><td>Yami, Asta, Luffy</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
-                        <tbody>
-                            <tr><td contenteditable="true">Trading</td><td>TechCorp</td><td>Yami, Asta, Luffy</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
-                        <tbody>
-                            <tr><td contenteditable="true">Onzecord</td><td>TechCorp</td><td>Jimmy, Guill, Alex</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
-                        <tbody>
-                            <tr><td contenteditable="true">Appli</td><td>golge</td><td>Nath, François, Lorent</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
-                        <tbody>
-                            <tr><td contenteditable="true">Protection</td><td>Protego maxima</td><td>Nana, Goku, Harry</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
-                        <tbody>
-                            <tr><td contenteditable="true">Biblio</td><td>Déus_corp</td><td>Babel, Alexandre, Hugo</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
-                        </tbody>
+    const profiles = {
+        'Etudiant': {
+            name: "Guillaume",
+            avatar: "G",
+            html: `
+            <div class="card border-student">
+                <span class="tag tag-green">Actif</span>
+                <h2>Refonte Site E-commerce</h2>
+                <div class="info-box-simple">
+                    <p><strong>Entreprise :</strong> TechCorp</p>
+                    <p><strong>Statut :</strong> En cours</p>
+                    <p><strong>Membres :</strong> Guillaume, Wylliam, Théo</p>
+                    <p><strong>Description :</strong> Modernisation du site pour améliorer l’expérience utilisateur, les performances et les ventes.</p>
+                    <p><strong>Année :</strong> 2026</p>
+                </div>
+            </div>`
+        },
 
+        'Ecole': {
+            name: "Mme Martin",
+            avatar: "M",
+            html: `
+            <div class="card border-admin">
+                <div class="flex-between">
+                    <h2>Administration Projets</h2>
+                    <button class="btn-small-primary" onclick="addNewProjectRow()">+ Ajouter</button>
+                </div>
 
+                <h4 onclick="toggleYear(this)" class="year-title">▶ 2026 :</h4>
+                <div class="year-content">
+                    <table class="data-table">
+                        <tbody id="table-2026">
+                            <tr><td contenteditable="true">Refonte E-commerce</td><td>TechCorp</td><td>Guillaume, Wylliam, Théo</td><td>Modernisation du site...</td><td>2026</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                            <tr><td contenteditable="true">yotuube</td><td>TechCorp</td><td>nathan, max, julien</td><td>Plateforme de vidéos...</td><td>2026</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                            <tr><td contenteditable="true">Protection</td><td>Protego maxima</td><td>Nana, Goku, Harry</td><td>Projet axé sur la protection et la sécurité...</td><td>2026</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                        </tbody>
                     </table>
+                </div>
 
-                </div>`
-            },
-            'Entreprise': {
-                name: "TechCorp", avatar: "T",
-                html: `<div class="card border-business">
-                    <h2>Suivi de Collaboration</h2>
-                    <div class="info-box-simple">
-                        <p>Projet : <strong>Refonte E-commerce</strong></p>
-                        <p>Étudiants : <strong>Guillaume, Wylliam, Théo</strong></p>
-                    </div>
-                    <div class="info-box-simple">
-                        <p>Projet : <strong>yotuube</strong></p>
-                        <p>Étudiants : <strong>nathan, max, julien</strong></p>
-                    </div>
-                    <div class="info-box-simple">
-                        <p>Projet : <strong>Trading</strong></p>
-                        <p>Étudiants : <strong>Yami, Asta, Luffy</strong></p>
-                    </div>
-                    <div class="info-box-simple">
-                        <p>Projet : <strong>Onzecord</strong></p>
-                        <p>Étudiants : <strong>Jimmy, Guill, Alex</strong></p>
-                    </div>
-                </div>`
-            }
-        };
+                <h4 onclick="toggleYear(this)" class="year-title">▶ 2025 :</h4>
+                <div class="year-content">
+                    <table class="data-table">
+                        <tbody id="table-2025">
+                            <tr><td contenteditable="true">Trading</td><td>TechCorp</td><td>Yami, Asta, Luffy</td><td>Activité boursière...</td><td>2025</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                            <tr><td contenteditable="true">Batiment</td><td>Déus_corp</td><td>Babel, Alexandre, Qin Shi Huang</td><td>Construire une conception de batiment qui met à l'amende la tour de babel...</td><td>2025</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        const current = profiles[role] || profiles['Etudiant'];
-        document.getElementById('user-display').innerText = current.name;
-        document.getElementById('role-display').innerText = role;
-        document.getElementById('avatar-letter').innerText = current.avatar;
-        container.innerHTML = current.html;
+                <h4 onclick="toggleYear(this)" class="year-title">▶ 2024 :</h4>
+                <div class="year-content">
+                    <table class="data-table">
+                        <tbody id="table-2024">
+                            <tr><td contenteditable="true">Onzecord</td><td>TechCorp</td><td>Jimmy, Guill, Alex</td><td>Plateforme de communication par messages...</td><td>2024</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                            <tr><td contenteditable="true">Appli</td><td>golge</td><td>Nath, François, Lorent</td><td>Projet axé sur une expérience innovante...</td><td>2024</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>`
+        },
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const chatbox = document.getElementById('chatbox');
-            if (input.value.trim() !== "") {
-                const msg = document.createElement('div');
-                msg.className = "message sent";
-                msg.innerHTML = `<span class="sender">Moi</span><p>${input.value}</p>`;
-                chatbox.appendChild(msg);
-                input.value = "";
-                chatbox.scrollTop = chatbox.scrollHeight;
-            }
+        'Entreprise': {
+            name: "TechCorp",
+            avatar: "T",
+            html: `
+            <div class="card border-business">
+                <h2>Historique de Collaboration</h2>
+
+                <h4 onclick="toggleYear(this)" class="year-title">▶ 2026 :</h4>
+                <div class="year-content">
+                    <div class="info-box-simple">Projet E-commerce (En cours)</div>
+                </div>
+
+                <h4 onclick="toggleYear(this)" class="year-title">▶ 2025 :</h4>
+                <div class="year-content">
+                    <div class="info-box-simple">Projet Trading (Terminé)</div>
+                </div>
+
+                <h4 onclick="toggleYear(this)" class="year-title">▶ 2024 :</h4>
+                <div class="year-content">
+                    <div class="info-box-simple">Projet Onzecord (Terminé)</div>
+                </div>
+            </div>`
         }
+    };
 
-        function addNewProjectRow() {
-            const table = document.getElementById('projects-table').getElementsByTagName('tbody')[0];
-            const row = table.insertRow();
-            row.innerHTML = `<td contenteditable="true">Nom...</td><td contenteditable="true">Entr...</td><td contenteditable="true">Élève...</td><td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td>`;
-        }
+    const current = profiles[role] || profiles['Etudiant'];
 
-        function openTab(evt, tabName) {
-            document.querySelectorAll(".tab-pane, .nav-item").forEach(el => el.classList.remove("active"));
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-            
-            let label = tabName;
-            if (tabName === 'Home') label = "Accueil";
-            if (tabName === 'Projets') label = (role === 'Etudiant' ? "Mon Projet" : "Projets");
-            document.getElementById('tab-title').innerText = label;
+    document.getElementById('user-display').innerText = current.name;
+    document.getElementById('role-display').innerText = role;
+    document.getElementById('avatar-letter').innerText = current.avatar;
+
+    container.innerHTML = current.html;
+
+    /* AJOUT PROJET */
+    function addNewProjectRow() {
+        const table = document.getElementById('table-2026');
+        if(!table) return;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td contenteditable="true">Nom...</td>
+            <td contenteditable="true">Entreprise...</td>
+            <td contenteditable="true">Étudiants...</td>
+            <td contenteditable="true">Description...</td>
+            <td contenteditable="true">2026</td>
+            <td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">✕</button></td>
+        `;
+        table.appendChild(row);
+    }
+
+    /* ACCORDÉON */
+    function toggleYear(element) {
+        const content = element.nextElementSibling;
+        const isOpen = content.classList.contains("open");
+
+        // Optionnel : ferme les autres sections
+        /*
+        document.querySelectorAll(".year-content").forEach(c => c.classList.remove("open"));
+        document.querySelectorAll(".year-title").forEach(t => t.innerHTML = t.innerHTML.replace("▼", "▶"));
+        */
+
+        if (!isOpen) {
+            content.classList.add("open");
+            element.innerHTML = element.innerHTML.replace("▶", "▼");
+        } else {
+            content.classList.remove("open");
+            element.innerHTML = element.innerHTML.replace("▼", "▶");
         }
-    </script>
+    }
+
+    /* CHAT */
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const chatbox = document.getElementById('chatbox');
+        if (input.value.trim() !== "") {
+            const msg = document.createElement('div');
+            msg.className = "message sent";
+            msg.innerHTML = `<span class="sender">Moi</span><p>${input.value}</p>`;
+            chatbox.appendChild(msg);
+            input.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    }
+
+    /* NAVIGATION ONGLETS */
+    function openTab(evt, tabName) {
+        document.querySelectorAll(".tab-pane, .nav-item").forEach(el => el.classList.remove("active"));
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+
+        let label = tabName;
+        if (tabName === 'Home') label = "Accueil";
+        if (tabName === 'Projets') label = (role === 'Etudiant' ? "Mon Projet" : "Projets");
+        document.getElementById('tab-title').innerText = label;
+    }
+</script>
+
 </body>
 </html>
