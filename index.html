@@ -1,48 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skeleton Demo - Login</title>
+    <title>EduDemo | Connexion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-    <div class="main-card">
+<body class="login-page">
+    <div class="login-card">
+        <div class="brand">Edu<span>Demo</span></div>
         <div id="welcomeView">
-            <h1>EduDemo Platform</h1>
-            <p>Select your portal to continue</p>
-            <hr>
-            <div class="options">
-                <button class="btn outline" onclick="showLogin('Student')">Student Portal</button>
-                <button class="btn outline" onclick="showLogin('Professor')">Professor Portal</button>
-                <button class="btn outline" onclick="showLogin('Company')">Company Portal</button>
+            <p class="subtitle">Gestion de projets académiques</p>
+            <div class="options-stack">
+                <button class="choice-btn" onclick="goToLogin('Etudiant')">
+                    <span class="icon">🎓</span> 
+                    <div class="text"><strong>Étudiant</strong><small>Accès personnel</small></div>
+                </button>
+                <button class="choice-btn" onclick="goToLogin('Ecole')">
+                    <span class="icon">🏫</span> 
+                    <div class="text"><strong>École</strong><small>Administration</small></div>
+                </button>
+                <button class="choice-btn" onclick="goToLogin('Entreprise')">
+                    <span class="icon">💼</span> 
+                    <div class="text"><strong>Entreprise</strong><small>Partenariat</small></div>
+                </button>
             </div>
-            <p class="footer-link">Already have an account? <a href="#" onclick="showLogin('User')">Connexion</a></p>
         </div>
-
         <div id="loginView" style="display: none;">
-            <button class="back-link" onclick="showWelcome()">← Back</button>
-            <h2 id="loginTitle">Connexion</h2>
-            <form action="dashboard.html">
-                <input type="text" placeholder="Username" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit" class="btn solid">Login to Dashboard</button>
+            <button class="back-link" onclick="showWelcome()">← Retour</button>
+            <h2 id="loginTitle" class="form-title">Connexion</h2>
+            <form id="fakeLoginForm" class="login-form">
+                <input type="text" placeholder="Identifiant" required>
+                <input type="password" placeholder="Mot de passe" required>
+                <button type="submit" class="btn-primary">Se connecter</button>
             </form>
         </div>
     </div>
-
     <script>
-        function showLogin(role) {
+        let selectedRole = '';
+        function goToLogin(role) {
+            selectedRole = role;
             document.getElementById('welcomeView').style.display = 'none';
             document.getElementById('loginView').style.display = 'block';
-            document.getElementById('loginTitle').innerText = role + " Connexion";
+            document.getElementById('loginTitle').innerText = "Accès " + role;
         }
         function showWelcome() {
             document.getElementById('welcomeView').style.display = 'block';
             document.getElementById('loginView').style.display = 'none';
         }
+        document.getElementById('fakeLoginForm').onsubmit = (e) => {
+            e.preventDefault();
+            window.location.href = "dashboard.html?role=" + selectedRole;
+        };
     </script>
-
 </body>
 </html>
